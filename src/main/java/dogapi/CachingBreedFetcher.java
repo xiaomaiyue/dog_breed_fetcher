@@ -23,7 +23,7 @@ public class CachingBreedFetcher implements BreedFetcher {
     }
 
     @Override
-    public List<String> getSubBreeds(String breed) {
+    public List<String> getSubBreeds(String breed) throws BreedNotFoundException {
         // Normalize key to make cache case/whitespace-insensitive
         String key = (breed == null) ? null : breed.trim().toLowerCase();
 
@@ -35,16 +35,11 @@ public class CachingBreedFetcher implements BreedFetcher {
 
         // Cache miss: call underlying fetcher and record the call
         callsMade++;
-        try {
-            List<String> result = delegate.getSubBreeds(breed);
-            // Store an unmodifiable copy to protect cache integrity
-            List<String> copy = new ArrayList<>(result);
-            cache.put(key, copy);
-            return copy;
-        } catch (BreedFetcher.BreedNotFoundException e) {
-            // Do NOT cache failures per spec
-            throw e;
-        }
+        List<String> result = delegate.getSubBreeds(breed);
+        // Store an unmodifiable copy to protect cache integrity
+        List<String> copy = new ArrayList<>(result);
+        cache.put(key, copy);
+        return copy;
     }
 
     public int getCallsMade() {
