@@ -30,7 +30,7 @@ public class Main {
         List<String> breedlist = cachingBreedFetcher.getSubBreeds(breed);
         return breedlist.size();}
         catch (BreedFetcher.BreedNotFoundException e) {
-            return -1;
+            return 0;
         }
         // return statement included so that the starter code can compile and run.
 
